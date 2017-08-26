@@ -1,0 +1,16 @@
+{
+  "name": "clean-users",
+  "version": "1.0.0",
+  "description": "Cleans inactive GitHub organization members",
+  "main": "app.js",
+  "scripts": {
+    "debug": "node --nolazy --debug-brk=5858 app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Rob Prouse <rob@prouse.org>",
+  "license": "MIT",
+  "dependencies": {
+    "dotenv": "^4.0.0",
+    "request": "^2.81.0"
+  }
+}
