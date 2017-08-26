@@ -4,6 +4,10 @@ var request = require("request");
 require('dotenv').config();
 
 var token = process.env.GITHUB_TOKEN;
+if(!token) {
+  console.error("You must set the environment variable GITHUB_TOKEN. See the README.");
+  return;
+}
 
 var options = {
   method: 'GET',
