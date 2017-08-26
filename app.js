@@ -19,24 +19,37 @@ var options = {
   }
 };
 
+// Get all the repos
 request('https://api.github.com/orgs/nunit/repos?per_page=50', options, function (error, response, body) {
   if (error) throw new Error(error);
 
-  var json = JSON.parse(body);
-  for (repo of json) {
-    console.log(repo.name);
-  }
+  var repositories = JSON.parse(body);
+
+  // Get all the users in the organization
+  request('https://api.github.com/orgs/nunit/members?per_page=100', options, function (error, response, body) {
+    if (error) throw new Error(error);
+
+    var users = JSON.parse(body).map(function(u) { return {
+      login: u.login,
+      last_commit: 0
+     }});
+
+     GetStatisticsForRepositories(repositories, users);
+  });
 });
 
-// request('https://api.github.com/orgs/nunit/members?per_page=100', options, function (error, response, body) {
-//   if (error) throw new Error(error);
+function GetStatisticsForRepositories(repositories, users) {
+  console.log("USERS");
+  for (user of users) {
+    console.log(user);
+  }
 
-//   var users = JSON.parse(body)
-//                   .map(function(u) { return u.login });
-//   for (user of users) {
-//     console.log(user);
-//   }
-// });
+  console.log();
+  console.log("REPOSITORIES");
+  for (repo of repositories) {
+    console.log(repo.name);
+  }
+}
 
 // request('https://api.github.com/repos/nunit/nunit/stats/contributors', options, function (error, response, body) {
 //   if (error) throw new Error(error);
