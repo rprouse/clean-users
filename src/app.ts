@@ -13,7 +13,21 @@ class User {
 }
 
 interface Repository {
+  id: number;
   name: string;
+  full_name: string;
+  description: string;
+  default_branch: string;
+  forks: number;
+  stargazers_count: number;
+  watchers: number;
+}
+
+interface Member {
+  id: number;
+  login: string;
+  avatar_url: string;
+  html_url: string;
 }
 
 const options = {
@@ -33,7 +47,8 @@ async function getRepositories(): Promise<Repository[]> {
 
 async function getMembers(): Promise<User[]> {
   let json = await request('https://api.github.com/orgs/nunit/members?per_page=100', options);
-  return JSON.parse(json).map(function(u: any) { return new User(u.login, 0) });
+  let members: Member[] = JSON.parse(json);
+  return members.map(function(u: Member) { return new User(u.login, 0) });
 }
 
 function GetStatisticsForRepositories(repositories: Repository[], users: User[]) {
