@@ -1,15 +1,14 @@
-#!/usr/bin/env node
+import * as request from 'request';
+import * as dotenv from 'dotenv';
+dotenv.config();
 
-var request = require("request");
-require('dotenv').config();
-
-var token = process.env.GITHUB_TOKEN;
+const token = process.env.GITHUB_TOKEN;
 if(!token) {
   console.error("You must set the environment variable GITHUB_TOKEN. See the README.");
-  return;
+  process.exit(-1);
 }
 
-var options = {
+const options = {
   method: 'GET',
   headers: {
     accept: 'application/json',
@@ -29,7 +28,7 @@ request('https://api.github.com/orgs/nunit/repos?per_page=50', options, function
   request('https://api.github.com/orgs/nunit/members?per_page=100', options, function (error, response, body) {
     if (error) throw new Error(error);
 
-    var users = JSON.parse(body).map(function(u) { return {
+    var users = JSON.parse(body).map(function(u: any) { return {
       login: u.login,
       last_commit: 0
      }});
@@ -38,15 +37,15 @@ request('https://api.github.com/orgs/nunit/repos?per_page=50', options, function
   });
 });
 
-function GetStatisticsForRepositories(repositories, users) {
+function GetStatisticsForRepositories(repositories: any, users: any) {
   console.log("USERS");
-  for (user of users) {
+  for (let user of users) {
     console.log(user);
   }
 
   console.log();
   console.log("REPOSITORIES");
-  for (repo of repositories) {
+  for (let repo of repositories) {
     console.log(repo.name);
   }
 }

@@ -3,8 +3,12 @@
   "version": "1.0.0",
   "description": "Cleans inactive GitHub organization members",
   "main": "app.js",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:rprouse/clean-users.git"
+  },
   "scripts": {
-    "debug": "node --nolazy --debug-brk=5858 app.js",
+    "debug": "node --nolazy --debug-brk=5858 dist/app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Rob Prouse <rob@prouse.org>",
@@ -12,5 +16,10 @@
   "dependencies": {
     "dotenv": "^4.0.0",
     "request": "^2.81.0"
+  },
+  "devDependencies": {
+    "@types/dotenv": "^4.0.1",
+    "@types/node": "^8.0.26",
+    "@types/request": "^2.0.3"
   }
 }
