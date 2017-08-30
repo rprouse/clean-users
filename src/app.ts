@@ -8,6 +8,10 @@ if(!token) {
   process.exit(-1);
 }
 
+class User {
+  constructor(public login: string, public last_commit: number) {}
+}
+
 const options = {
   method: 'GET',
   headers: {
@@ -28,19 +32,16 @@ request('https://api.github.com/orgs/nunit/repos?per_page=50', options, function
   request('https://api.github.com/orgs/nunit/members?per_page=100', options, function (error, response, body) {
     if (error) throw new Error(error);
 
-    var users = JSON.parse(body).map(function(u: any) { return {
-      login: u.login,
-      last_commit: 0
-     }});
+    let users: User[] = JSON.parse(body).map(function(u: any) { return new User(u.login, 0) });
 
      GetStatisticsForRepositories(repositories, users);
   });
 });
 
-function GetStatisticsForRepositories(repositories: any, users: any) {
+function GetStatisticsForRepositories(repositories: any, users: User[]) {
   console.log("USERS");
   for (let user of users) {
-    console.log(user);
+    console.log(user.login);
   }
 
   console.log();
