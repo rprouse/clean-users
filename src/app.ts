@@ -30,6 +30,19 @@ interface Member {
   html_url: string;
 }
 
+interface Week {
+  a: number;
+  c: number;
+  d: number;
+  w: number;
+}
+
+interface Statistic {
+  author: Member;
+  total: number;
+  weeks: Week[];
+}
+
 const options = {
   method: 'GET',
   headers: {
@@ -51,30 +64,28 @@ async function getMembers(): Promise<User[]> {
   return members.map(function(u: Member) { return new User(u.login, 0) });
 }
 
-function GetStatisticsForRepositories(repositories: Repository[], users: User[]) {
-  console.log("USERS");
-  for (let user of users) {
-    console.log(user);
-  }
+async function getStatistics(repository: Repository): Promise<Statistic[]> {
+  let json = await request('https://api.github.com/repos/' + repository.full_name + '/stats/contributors', options);
+  return JSON.parse(json);
+}
 
-  console.log();
-  console.log("REPOSITORIES");
+async function GetStatisticsForRepositories(repositories: Repository[], users: User[]) {
+  // console.log("USERS");
+  // for (let user of users) {
+  //   console.log(user);
+  // }
+
   for (let repo of repositories) {
-    console.log(repo.name);
+    var stats = await getStatistics(repo);
+    console.log(stats);
   }
 }
 
-// request('https://api.github.com/repos/nunit/nunit/stats/contributors', options, function (error, response, body) {
-//   if (error) throw new Error(error);
-
-//   var json = JSON.stringify(JSON.parse(body), null, 2);
-//   console.log(json);
-// });
 async function main() {
   try {
     let repositories = await getRepositories();
     let users = await getMembers();
-    GetStatisticsForRepositories(repositories, users);
+    await GetStatisticsForRepositories(repositories, users);
   } catch(err) {
     console.error('Error: ', err.message);
   }
