@@ -69,23 +69,15 @@ async function getStatistics(repository: Repository): Promise<Statistic[]> {
   return JSON.parse(json);
 }
 
-async function GetStatisticsForRepositories(repositories: Repository[], users: User[]) {
-  // console.log("USERS");
-  // for (let user of users) {
-  //   console.log(user);
-  // }
-
-  for (let repo of repositories) {
-    var stats = await getStatistics(repo);
-    console.log(stats);
-  }
-}
-
 async function main() {
   try {
     let repositories = await getRepositories();
     let users = await getMembers();
-    await GetStatisticsForRepositories(repositories, users);
+
+    for (let repo of repositories) {
+      var stats = await getStatistics(repo);
+      console.log(stats);
+    }
   } catch(err) {
     console.error('Error: ', err.message);
   }
