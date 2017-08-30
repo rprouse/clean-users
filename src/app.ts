@@ -1,4 +1,4 @@
-import * as request from 'request';
+import * as request from 'request-promise';
 import * as dotenv from 'dotenv';
 dotenv.config();
 
@@ -12,6 +12,10 @@ class User {
   constructor(public login: string, public last_commit: number) {}
 }
 
+interface Repository {
+  name: string;
+}
+
 const options = {
   method: 'GET',
   headers: {
@@ -22,26 +26,20 @@ const options = {
   }
 };
 
-// Get all the repos
-request('https://api.github.com/orgs/nunit/repos?per_page=50', options, function (error, response, body) {
-  if (error) throw new Error(error);
+async function getRepositories(): Promise<Repository[]> {
+  let json = await request('https://api.github.com/orgs/nunit/repos?per_page=50', options);
+  return JSON.parse(json);
+}
 
-  var repositories = JSON.parse(body);
+async function getMembers(): Promise<User[]> {
+  let json = await request('https://api.github.com/orgs/nunit/members?per_page=100', options);
+  return JSON.parse(json).map(function(u: any) { return new User(u.login, 0) });
+}
 
-  // Get all the users in the organization
-  request('https://api.github.com/orgs/nunit/members?per_page=100', options, function (error, response, body) {
-    if (error) throw new Error(error);
-
-    let users: User[] = JSON.parse(body).map(function(u: any) { return new User(u.login, 0) });
-
-     GetStatisticsForRepositories(repositories, users);
-  });
-});
-
-function GetStatisticsForRepositories(repositories: any, users: User[]) {
+function GetStatisticsForRepositories(repositories: Repository[], users: User[]) {
   console.log("USERS");
   for (let user of users) {
-    console.log(user.login);
+    console.log(user);
   }
 
   console.log();
@@ -57,3 +55,14 @@ function GetStatisticsForRepositories(repositories: any, users: User[]) {
 //   var json = JSON.stringify(JSON.parse(body), null, 2);
 //   console.log(json);
 // });
+async function main() {
+  try {
+    let repositories = await getRepositories();
+    let users = await getMembers();
+    GetStatisticsForRepositories(repositories, users);
+  } catch(err) {
+    console.error('Error: ', err.message);
+  }
+}
+
+main();
