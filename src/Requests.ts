@@ -32,10 +32,14 @@ export async function getRepositories(): Promise<GitHub.Repository[]> {
 export async function getMembers(): Promise<User[]> {
   let json = await request('https://api.github.com/orgs/nunit/members?per_page=100', options);
   let members: GitHub.Member[] = JSON.parse(json);
-  return members.map(function (u: GitHub.Member) { return new User(u.login, 0) });
+  return members.map((u: GitHub.Member) => new User(u.login, 0));
 }
 
 export async function getStatistics(repository: GitHub.Repository): Promise<GitHub.Statistic[]> {
   let json = await request('https://api.github.com/repos/' + repository.full_name + '/stats/contributors', options);
-  return JSON.parse(json);
+  let stats: GitHub.Statistic[] = JSON.parse(json);
+  for(let stat of stats) {
+    stat.weeks = stat.weeks.filter((w: GitHub.Week) => w.a != 0 && w.c != 0 && w.d != 0);
+  }
+  return stats;
 }

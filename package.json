@@ -2,14 +2,16 @@
   "name": "clean-users",
   "version": "1.0.0",
   "description": "Cleans inactive GitHub organization members",
-  "main": "app.js",
+  "main": "dist/App.js",
   "repository": {
     "type": "git",
     "url": "git@github.com:rprouse/clean-users.git"
   },
   "scripts": {
-    "debug": "node --nolazy --debug-brk=5858 dist/app.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "tsc",
+    "dev": "tsc --watch && nodemon dist",
+    "test": "tsc && mocha dist/**/*.spec.js",
+    "debug": "tsc && node --nolazy --debug-brk=5858 dist/app.js"
   },
   "author": "Rob Prouse <rob@prouse.org>",
   "license": "MIT",
@@ -20,8 +22,10 @@
   },
   "devDependencies": {
     "@types/dotenv": "^4.0.1",
+    "@types/mocha": "^2.2.41",
     "@types/node": "^8.0.26",
     "@types/request": "^2.0.3",
-    "@types/request-promise": "^4.1.37"
+    "@types/request-promise": "^4.1.37",
+    "mocha": "^3.4.2"
   }
 }
