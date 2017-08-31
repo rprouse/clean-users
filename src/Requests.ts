@@ -10,10 +10,6 @@ if(!token) {
   process.exit(-1);
 }
 
-export class User {
-  constructor(public login: string, public last_commit: number) {}
-}
-
 const options = {
   method: 'GET',
   headers: {
@@ -29,15 +25,25 @@ export async function getRepositories(): Promise<GitHub.Repository[]> {
   return JSON.parse(json);
 }
 
-export async function getMembers(): Promise<User[]> {
+// The map key is the user login, number is the last commit as a unix timestamp
+export async function getMembers(): Promise<Map<string, number>> {
   let json = await request('https://api.github.com/orgs/nunit/members?per_page=100', options);
   let members: GitHub.Member[] = JSON.parse(json);
-  return members.map((u: GitHub.Member) => new User(u.login, 0));
+  let users: Map<string, number> = new Map<string, number>();
+  if(members === undefined || members.length == 0)
+    return users;
+  for(let member of members) {
+    users.set(member.login, 0);
+  }
+  return users;
 }
 
 export async function getStatistics(repository: GitHub.Repository): Promise<GitHub.Statistic[]> {
   let json = await request('https://api.github.com/repos/' + repository.full_name + '/stats/contributors', options);
   let stats: GitHub.Statistic[] = JSON.parse(json);
+  if(stats === undefined || stats.length == 0)
+    return stats;
+
   for(let stat of stats) {
     stat.weeks = stat.weeks.filter((w: GitHub.Week) => w.a != 0 && w.c != 0 && w.d != 0);
   }
