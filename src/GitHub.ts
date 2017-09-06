@@ -1,4 +1,8 @@
 namespace GitHub {
+
+  /**
+   * Information returned from the GitHub API on a Repository
+   */
   export interface Repository {
     id: number;
     name: string;
@@ -10,6 +14,9 @@ namespace GitHub {
     watchers: number;
   }
 
+  /**
+   * Information returned from the GitHub API on an Organization member
+   */
   export interface Member {
     id: number;
     login: string;
@@ -17,13 +24,31 @@ namespace GitHub {
     html_url: string;
   }
 
+  /**
+   * One week in the stats returned from the GitHub API
+   */
   export interface Week {
+    /**
+     * Number of adds this week
+     */
     a: number;
+    /**
+     * Number of commits this week
+     */
     c: number;
+    /**
+     * Number of deletes this week
+     */
     d: number;
+    /**
+     * The Unix timestamp for this week
+     */
     w: number;
   }
 
+  /**
+   * Information returned from the GitHub API on a Repository's statistics
+   */
   export interface Statistic {
     author: Member;
     total: number;

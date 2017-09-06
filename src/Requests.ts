@@ -20,6 +20,9 @@ const options = {
   }
 };
 
+/**
+ * Gets a list of repositories for the NUnit organization
+ */
 export async function getRepositories(): Promise<GitHub.Repository[] | undefined> {
   let json = await request('https://api.github.com/orgs/nunit/repos?per_page=50', options);
   let repos = JSON.parse(json);
@@ -28,7 +31,11 @@ export async function getRepositories(): Promise<GitHub.Repository[] | undefined
   return repos;
 }
 
-// The map key is the user login, number is the last commit as a unix timestamp
+/**
+ * Gets a list of users for the NUnit organization
+ *
+ * The map key is the user login, number is the last commit as a unix timestamp
+ */
 export async function getUsers(): Promise<Map<string, number> | undefined> {
   let json = await request('https://api.github.com/orgs/nunit/members?per_page=100', options);
   let members: GitHub.Member[] = JSON.parse(json);
@@ -41,6 +48,11 @@ export async function getUsers(): Promise<Map<string, number> | undefined> {
   return users;
 }
 
+/**
+ * Gets checkin stats for a given {repository}
+ *
+ * @param repository The repository to fetch stats for
+ */
 export async function getStatistics(repository: GitHub.Repository): Promise<GitHub.Statistic[] | undefined> {
   let json = await request('https://api.github.com/repos/' + repository.full_name + '/stats/contributors', options);
   let stats: GitHub.Statistic[] = JSON.parse(json);

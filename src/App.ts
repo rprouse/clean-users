@@ -3,7 +3,7 @@
 import * as github from './Requests';
 
 /**
- * Returns the latest checkin for the given set of statistics
+ * Returns the latest checkin for the given set of {stat}s
  *
  * @param stat The GitHub statistics for one user
  */
@@ -12,6 +12,13 @@ function latestCheckin(stat: GitHub.Statistic): number {
   return sorted.length > 0 ? sorted[0].w : 0;
 }
 
+/**
+ * Goes through the {stats} for a repository and updates users with newer checkin
+ * times if they have commited to this repository more recently.
+ *
+ * @param stats The GitHub statistics for a repository
+ * @param users The list of users with their most recent checkins
+ */
 function updateStats(stats: GitHub.Statistic[], users: Map<string, number>): void {
   for(let stat of stats) {
     let last = users.get(stat.author.login);
@@ -24,18 +31,32 @@ function updateStats(stats: GitHub.Statistic[], users: Map<string, number>): voi
   }
 }
 
+/**
+ * Outputs the latest checkin time for users
+ *
+ * @param users The organization users and their latest checkin
+ */
 function outputUsers(users: Map<string, number>): void {
   for (let key of users.keys()) {
     console.log(key + ': ' + users.get(key));
   }
 }
 
+/**
+ * Prints an error {msg} to the console and exits the process with {returnCode}
+ *
+ * @param msg The error message
+ * @param returnCode The value to return when the process exits
+ */
 function exitWithError(msg: string, returnCode: number): void {
   console.error(msg)
   process.exit(returnCode);
 }
 
-async function main() {
+/**
+ * The main entry point for the program
+ */
+async function main(): Promise<void> {
   try {
     let repositories = await github.getRepositories();
     if(repositories !== undefined) {
