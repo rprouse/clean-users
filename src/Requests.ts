@@ -29,7 +29,7 @@ export async function getRepositories(): Promise<GitHub.Repository[] | undefined
 }
 
 // The map key is the user login, number is the last commit as a unix timestamp
-export async function getMembers(): Promise<Map<string, number> | undefined> {
+export async function getUsers(): Promise<Map<string, number> | undefined> {
   let json = await request('https://api.github.com/orgs/nunit/members?per_page=100', options);
   let members: GitHub.Member[] = JSON.parse(json);
   let users: Map<string, number> = new Map<string, number>();
