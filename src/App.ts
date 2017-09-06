@@ -13,7 +13,6 @@ async function main() {
     if(repositories !== undefined) {
       let users = await github.getMembers();
       if(users !== undefined) {
-
         let failed = false;
         for (let repo of repositories) {
           let stats = await github.getStatistics(repo);
@@ -22,6 +21,7 @@ async function main() {
             failed = true;
             continue;
           }
+          console.info("Fetched stats for " + repo.name);
 
           for(let stat of stats) {
             let last = users.get(stat.author.login);
