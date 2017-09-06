@@ -37,16 +37,17 @@ function updateStats(stats: GitHub.Statistic[], users: Map<string, number>): voi
  * @param users The organization users and their latest checkin
  */
 function outputUsers(users: Map<string, number>): void {
-  for (let key of users.keys()) {
-    var timestamp = users.get(key);
-    if(timestamp === undefined)
-      continue;
 
-    if(timestamp === 0) {
-      console.log(key + ": NEVER");
+  var sorted = [...users].map(e =>{ return {login: e[0], lastCommit: e[1]};}).slice().sort(function(a, b) {
+    return a.lastCommit - b.lastCommit;
+  });
+
+  for (let user of sorted) {
+    if(user.lastCommit === 0) {
+      console.log(user.login + ": NEVER");
     } else {
-      var lastCommit = new Date(timestamp*1000);
-      console.log(key + ': ' + lastCommit.toDateString());
+      var lastCommit = new Date(user.lastCommit*1000);
+      console.log(user.login + ': ' + lastCommit.toDateString());
     }
   }
 }
