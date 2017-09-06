@@ -38,7 +38,16 @@ function updateStats(stats: GitHub.Statistic[], users: Map<string, number>): voi
  */
 function outputUsers(users: Map<string, number>): void {
   for (let key of users.keys()) {
-    console.log(key + ': ' + users.get(key));
+    var timestamp = users.get(key);
+    if(timestamp === undefined)
+      continue;
+
+    if(timestamp === 0) {
+      console.log(key + ": NEVER");
+    } else {
+      var lastCommit = new Date(timestamp*1000);
+      console.log(key + ': ' + lastCommit.toDateString());
+    }
   }
 }
 
