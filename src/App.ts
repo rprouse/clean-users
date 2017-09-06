@@ -42,10 +42,13 @@ function outputUsers(users: Map<string, number>): void {
     return a.lastCommit - b.lastCommit;
   });
 
+  var lastYear = new Date();
+  lastYear.setFullYear(lastYear.getFullYear() - 1);
+
   for (let user of sorted) {
     if(user.lastCommit === 0) {
       console.log(user.login + ": NEVER");
-    } else {
+    } else if (user.lastCommit < lastYear.getTime()/1000){
       var lastCommit = new Date(user.lastCommit*1000);
       console.log(user.login + ': ' + lastCommit.toDateString());
     }
