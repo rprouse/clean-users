@@ -71,38 +71,30 @@ function exitWithError(msg: string, returnCode: number): void {
  */
 async function main(): Promise<void> {
   try {
-    let repositories = await github.getRepositories();
-    if(repositories !== undefined) {
-      let users = await github.getUsers();
-      if(users !== undefined) {
-        let failed = false;
-        for (let repo of repositories) {
-          let stats = await github.getStatistics(repo);
-          if(stats === undefined) {
-            console.warn("Failed to fetch stats for " + repo.name);
-            failed = true;
-            continue;
-          }
-          console.info("Fetched stats for " + repo.name);
-          updateStats(stats, users);
-        }
-
-        // The GitHub stats API is expensive and fails, so you need to request,
-        // then they will be generated and you will get results on your second
-        // request
-        if(!failed) {
-          outputUsers(users);
-        } else {
-          exitWithError("Wait a minute for stats to generate and rerun.", 1);
-        }
-      } else {
-        exitWithError("Failed to fetch users for the organization.", -3);
+    let repos = await github.getRepositories();
+    let users = await github.getUsers();
+    let failed = false;
+    for (let repo of repos) {
+      let stats = await github.getStatistics(repo);
+      if(stats === undefined) {
+        console.warn("Failed to fetch stats for " + repo.name);
+        failed = true;
+        continue;
       }
+      console.info("Fetched stats for " + repo.name);
+      updateStats(stats, users);
+    }
+
+    // The GitHub stats API is expensive and fails, so you need to request,
+    // then they will be generated and you will get results on your second
+    // request
+    if(!failed) {
+      outputUsers(users);
     } else {
-      exitWithError("Failed to fetch repositories for the organization.", -2);
+      exitWithError("Wait a minute for stats to generate and rerun.", 1);
     }
   } catch(err) {
-    exitWithError('Error: ' + err.message, -10);
+    exitWithError('Error: ' + err.message, -1);
   }
 }
 

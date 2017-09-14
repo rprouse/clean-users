@@ -24,10 +24,10 @@ const options = {
 /**
  * Gets a list of repositories for the NUnit organization
  */
-export async function getRepositories(): Promise<GitHub.Repository[] | undefined> {
+export async function getRepositories(): Promise<GitHub.Repository[]> {
   let repos: GitHub.Repository[] = await request('https://api.github.com/orgs/nunit/repos?per_page=50', options);
   if(repos === undefined || !(repos instanceof Array) || repos.length === 0)
-    return undefined;
+    throw new Error("Failed to fetch repositories for the organization.");
   return repos;
 }
 
@@ -36,11 +36,11 @@ export async function getRepositories(): Promise<GitHub.Repository[] | undefined
  *
  * The map key is the user login, number is the last commit as a unix timestamp
  */
-export async function getUsers(): Promise<Map<string, number> | undefined> {
+export async function getUsers(): Promise<Map<string, number>> {
   let members: GitHub.Member[] = await request('https://api.github.com/orgs/nunit/members?per_page=100', options);
   let users: Map<string, number> = new Map<string, number>();
   if(members === undefined || !(members instanceof Array) || members.length === 0)
-    return undefined;
+    throw new Error("Failed to fetch users for the organization.");
   for(let member of members) {
     users.set(member.login, 0);
   }
