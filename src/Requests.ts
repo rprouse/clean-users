@@ -17,15 +17,15 @@ const options = {
     authorization: 'token ' + token,
     'cache-control': 'no-cache',
     'User-Agent': 'NodeJS'
-  }
+  },
+  json: true
 };
 
 /**
  * Gets a list of repositories for the NUnit organization
  */
 export async function getRepositories(): Promise<GitHub.Repository[] | undefined> {
-  let json = await request('https://api.github.com/orgs/nunit/repos?per_page=50', options);
-  let repos = JSON.parse(json);
+  let repos: GitHub.Repository[] = await request('https://api.github.com/orgs/nunit/repos?per_page=50', options);
   if(repos === undefined || !(repos instanceof Array) || repos.length === 0)
     return undefined;
   return repos;
@@ -37,8 +37,7 @@ export async function getRepositories(): Promise<GitHub.Repository[] | undefined
  * The map key is the user login, number is the last commit as a unix timestamp
  */
 export async function getUsers(): Promise<Map<string, number> | undefined> {
-  let json = await request('https://api.github.com/orgs/nunit/members?per_page=100', options);
-  let members: GitHub.Member[] = JSON.parse(json);
+  let members: GitHub.Member[] = await request('https://api.github.com/orgs/nunit/members?per_page=100', options);
   let users: Map<string, number> = new Map<string, number>();
   if(members === undefined || !(members instanceof Array) || members.length === 0)
     return undefined;
@@ -54,8 +53,7 @@ export async function getUsers(): Promise<Map<string, number> | undefined> {
  * @param repository The repository to fetch stats for
  */
 export async function getStatistics(repository: GitHub.Repository): Promise<GitHub.Statistic[] | undefined> {
-  let json = await request('https://api.github.com/repos/' + repository.full_name + '/stats/contributors', options);
-  let stats: GitHub.Statistic[] = JSON.parse(json);
+  let stats: GitHub.Statistic[] = await request('https://api.github.com/repos/' + repository.full_name + '/stats/contributors', options);
   if(stats === undefined || !(stats instanceof Array) || stats.length === 0)
     return undefined;
 
