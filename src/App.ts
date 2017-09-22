@@ -71,8 +71,8 @@ function exitWithError(msg: string, returnCode: number): void {
  */
 (async function (): Promise<void> {
   try {
-    let repos = await github.getRepositories();
-    let users = await github.getUsers();
+    let repos = await github.getRepositories('nunit');
+    let users = await github.getUsers('nunit');
     let failed = false;
     for (let repo of repos) {
       let stats = await github.getStatistics(repo);
