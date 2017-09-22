@@ -69,7 +69,7 @@ function exitWithError(msg: string, returnCode: number): void {
 /**
  * The main entry point for the program
  */
-async function main(): Promise<void> {
+(async function (): Promise<void> {
   try {
     let repos = await github.getRepositories();
     let users = await github.getUsers();
@@ -96,6 +96,4 @@ async function main(): Promise<void> {
   } catch(err) {
     exitWithError('Error: ' + err.message, -1);
   }
-}
-
-main();
+})();
